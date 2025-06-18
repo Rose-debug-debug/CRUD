@@ -13,13 +13,15 @@ interface Patient {
   address: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function PatientList() {
   const [patients, setPatients] = useState<Patient[]>([]);
 
   useEffect(() => {
     const fetchPatient = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/patients/");
+        const response = await axios.get(`${API_URL}/patients/`);
         console.log("patient", response);
         setPatients(response.data);
       } catch (error) {
@@ -30,7 +32,7 @@ export default function PatientList() {
   }, []);
 
   return (
-    <div className="p-6 max-w-5xl bg-white mx-auto ">
+    <div className="p-6 max-w-5xl bg-white mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-black">Liste des Patients</h2>
         <Link
