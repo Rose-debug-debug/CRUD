@@ -1,47 +1,53 @@
 'use client'
 
-import axios from "axios";
+import axios from "axios"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
+// 🔗 Récupération du lien backend depuis l'env
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+export default function DeletePatient() {
+  const { id } = useParams()
+  const router = useRouter()
+  const [patient, setPatient] = useState<any>(null)
 
-export default function deletePatient (){
-    const {id} = useParams ();
-    const router = useRouter();
-    const [patient, setPatients] = useState<any>(null);
+  useEffect(() => {
+    const DelPatient = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/patients/${id}/`)
+        setPatient(response.data)
+      } catch (error) {
+        console.error("Erreur lors du fetch patient à supprimer :", error)
+      }
+    }
+    DelPatient()
+  }, [id])
 
-    useEffect (()=> {
-        const DelPatient = async() =>{
-            try{
-                const response = await axios.get(`http://127.0.0.1:8000/api/patients/${id}/`);
-                setPatients(response.data);              
-            }catch(error){
-                console.error(error);
-            }
-        }
-        DelPatient();
-    }, [id])
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`${API_URL}/patients/${id}/`)
+      alert('Patient supprimé avec succès !')
+      router.push('/')
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error)
+    }
+  }
 
-    const handleDelete = async() => {
-        try{
-            const response = await axios.delete(`http://127.0.0.1:8000/api/patients/${id}/`);
-            router.push('/');
-            console.log(response.data);
-        }catch(error){
-            console.error(error);
-        }
-    };
-    if (!patient) return <p className="p-6">Chargement...</p>; 
-  return ( 
-    <div className="p-6 max-w-xl mx-auto bg-white"> 
-        <h2 className="text-xl text-black font-bold mb-2">Supprimer un patient</h2> 
-        <p className="text-red-600">Voulez-vous vraiment supprimer : <strong>{patient.first_name}</strong> ?</p> 
-        <button onClick={handleDelete} className="mt-4 bg-red-600 text-white px-4 py-2 rounded"> 
-        Confirmer la suppression 
-        </button> 
-    </div> 
-); 
+  if (!patient) return <p className="p-6 text-black">Chargement...</p>
 
- 
+  return (
+    <div className="p-6 max-w-xl mx-auto bg-white rounded shadow">
+      <h2 className="text-xl text-black font-bold mb-4">Supprimer un patient</h2>
+      <p className="text-red-600 mb-4">
+        Voulez-vous vraiment supprimer <strong>{patient.first_name}</strong> ?
+      </p>
+      <button
+        onClick={handleDelete}
+        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition"
+      >
+        Confirmer la suppression
+      </button>
+    </div>
+  )
 }
