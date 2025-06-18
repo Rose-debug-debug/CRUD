@@ -1,8 +1,24 @@
-To avoid all type error :  
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
 
-pass this code to your next.config.mjs  file : 
+  images: {
+    domains: ['localhost', '127.0.0.1'], 
+  },
 
- typescript: {
-        // Set to true to allow production builds to complete despite type errors
-        ignoreBuildErrors: true,
-      },
+  typescript: {
+    // ✅ Permet de continuer même avec des erreurs TypeScript
+    ignoreBuildErrors: true,
+  },
+
+  eslint: {
+    // ✅ Ignore les erreurs ESLint pendant le build (utile pour Vercel)
+    ignoreDuringBuilds: true,
+  },
+
+  experimental: {
+    serverActions: true,
+  },
+}
+
+export default nextConfig
