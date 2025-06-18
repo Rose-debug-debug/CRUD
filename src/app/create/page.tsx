@@ -4,6 +4,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function CreatePage() {
   const [first_name, setFirstname] = useState('');
   const [last_name, setLastname] = useState('');
@@ -12,17 +14,17 @@ export default function CreatePage() {
   const [address, setAddress] = useState('');
   const router = useRouter();
 
-  const soumission = async (e: React.FormEvent) => {
+   const soumission = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const reponse = await axios.post('http://127.0.0.1:8000/api/patients/', {
+      const reponse = await axios.post(`${API_URL}/patients/`, {
         first_name,
         last_name,
         gender,
         phone,
         address,
       });
-      alert('Patient créé avec succès');
+      alert('✅ Patient créé avec succès');
       setFirstname('');
       setLastname('');
       setGender('');
@@ -30,8 +32,8 @@ export default function CreatePage() {
       setAddress('');
       router.push('/');
     } catch (error) {
-      console.log('erreur', error);
-      alert("Erreur lors de la création du patient.");
+      console.error('Erreur API:', error);
+      alert("❌ Erreur lors de la création du patient.");
     }
   };
 
